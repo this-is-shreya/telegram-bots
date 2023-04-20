@@ -192,12 +192,14 @@ bot.use(stage.middleware())
 stage.register(course)
 
 bot.command("/bookRide",async(ctx)=>{
+    console.log("c1")
     ctx.scene.enter("choose course")
 })
 
 
 
 bot.launch()
-app.listen(3000,()=>{
-    console.log("listening at 3000")
+const PORT = process.env.PORT || 3000
+app.listen(PORT,()=>{
+    console.log("listening at "+PORT)
 })
