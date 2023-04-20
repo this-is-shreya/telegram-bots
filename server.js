@@ -1,8 +1,15 @@
 const app = require("express")() // For creating the server
-const {Telegraf,session, Scenes:{Stage, WizardScene}} = require("telegraf") 
+const {Telegraf,session, Scenes:{Stage, WizardScene}, Telegram} = require("telegraf") 
 const dotenv = require("dotenv")  // For reading the .env file
 dotenv.config({path:"./config.env"})  // For reading the .env file
 const bot = new Telegraf(process.env.BOT_TOKEN)
+const {Bot} = require("grammy")
+const gBot = new Bot(process.env.BOT_TOKEN)
+
+
+// gBot.api.setMyCommands([
+//     { commands: [ { bookRide: 'to start interacting with the bot' } ] },
+// ])
 
 const course = new WizardScene("choose course",
 async(ctx)=>{
@@ -27,7 +34,6 @@ async(ctx)=>{
             ]
         }
     })
-    ctx.wizard.cursor = 0
     return ctx.wizard.next()
 
 },
@@ -56,7 +62,6 @@ async(ctx)=>{
                 ]
             }
         })
-        ctx.wizard.cursor = 1
 
         return ctx.wizard.next()
 
@@ -82,7 +87,6 @@ async(ctx)=>{
                 ]
             }
         })
-        ctx.wizard.cursor = 1
 
         return ctx.wizard.next()
     }
@@ -92,7 +96,6 @@ async(ctx)=>{
     }
 },
 async(ctx)=>{
-    ctx.wizard.cursor = 2
 
     if(ctx.callbackQuery == undefined){
         ctx.reply("Incorrect input. Bot has left the chat")
@@ -133,11 +136,51 @@ async(ctx)=>{
     return ctx.wizard.next()
 },
 async(ctx)=>{
+
+
     ctx.wizard.state.destination = ctx.message.text
     ctx.reply(`You have entered:
 Pickup location: ${ctx.wizard.state.location}
-Destination: ${ctx.wizard.state.destination}`)
+Destination: ${ctx.wizard.state.destination}
+Do you wish to confirm?`,{
+    reply_markup:{
+        inline_keyboard:[
+            [
+                {
+                    text:"Yes",
+                    callback_data:"yes-confirm"
+                },
+                {
+                    text:"No",
+                    callback_data:"no-confirm"
+                }
+            ]
+        ]
+    }
+})
+return ctx.wizard.next()
+},
+async(ctx)=>{
+    if(ctx.callbackQuery == undefined){
+        ctx.reply("Incorrect input. Bot has left the chat")
+        ctx.scene.leave()
+    }
+    else if(ctx.callbackQuery.data == "yes-confirm"){
+        ctx.reply(`<b>Your ride is confirmed!</b>
+Driver name: Rahul
+Auto number: KN 12 AE 987
+Driver's contact: 9876543210
+<b>OTP:1234</b>
+
+Will reach in <b>5 minutes</b>`,{ parse_mode: "HTML" })
 ctx.scene.leave()
+
+    }
+
+else{
+    ctx.reply("Bot has left the chat")
+    ctx.scene.leave()
+}
 }
 )
  
@@ -157,7 +200,10 @@ bot.command("/bookRide",async(ctx)=>{
 })
 
 
-
+console.log(bot.context.getChatMenuButton)
+Telegram.prototype.setMyCommands(
+    [ { "bookRide": 'to start interacting with the bot' } ]
+)
 bot.launch()
 app.listen(3000,()=>{
     console.log("listening at 3000")
