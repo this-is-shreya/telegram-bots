@@ -99,6 +99,7 @@ async(ctx)=>{
     }
     else if(ctx.callbackQuery.data == "no-cancel"){
         ctx.answerCbQuery()
+        ctx.reply("Your ride is still confirmed.")
         ctx.scene.leave()
     }
     else if(ctx.callbackQuery.data == "yes-cancel"){
@@ -115,7 +116,7 @@ async(ctx)=>{
     }
     else{
         ctx.answerCbQuery()
-        console.log(ctx.message.location)
+        // console.log(ctx.message.location)
         ctx.wizard.state.location = ctx.message.location
         return ctx.wizard.next()
         
@@ -127,7 +128,7 @@ async(ctx)=>{
         ctx.wizard.state.location = ctx.message.text
         
     }
-    console.log(ctx.message.text)
+    // console.log(ctx.message.text)
     ctx.reply("Please enter your destination")
     return ctx.wizard.next()
 },
@@ -194,7 +195,6 @@ bot.use(stage.middleware())
 stage.register(course)
 
 bot.command("bookRide",async(ctx)=>{
-    console.log("c1")
     ctx.scene.enter("choose course")
 })
 
