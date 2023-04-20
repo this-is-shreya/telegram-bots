@@ -4,7 +4,9 @@ const dotenv = require("dotenv")  // For reading the .env file
 dotenv.config({path:"./config.env"})  // For reading the .env file
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
-
+app.get("/",(req,res)=>{
+    res.send("working")
+})
 const course = new WizardScene("choose course",
 async(ctx)=>{
     ctx.reply(`Hey There! What would you like to do?`,
