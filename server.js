@@ -138,6 +138,7 @@ async(ctx)=>{
     ctx.reply(`You have entered:
 Pickup location: ${ctx.wizard.state.location}
 Destination: ${ctx.wizard.state.destination}
+Fare: 100 Rs
 Do you wish to confirm?`,{
     reply_markup:{
         inline_keyboard:[
@@ -166,6 +167,7 @@ async(ctx)=>{
 Driver name: Rahul
 Auto number: KN 12 AE 987
 Driver's contact: 9876543210
+Fare: 100 Rs
 <b>OTP:1234</b>
 
 Will reach in <b>5 minutes</b>`,{ parse_mode: "HTML" })
@@ -191,7 +193,7 @@ const stage = new Stage([course],{sessionName:'chatSession'})
 bot.use(stage.middleware())
 stage.register(course)
 
-bot.command("/bookRide",async(ctx)=>{
+bot.command("bookRide",async(ctx)=>{
     console.log("c1")
     ctx.scene.enter("choose course")
 })
